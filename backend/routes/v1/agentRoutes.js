@@ -8,6 +8,6 @@ router.get('/', agentController.getAllAgents);
 
 router.post('/lock', authMiddleware, agentController.insertLockedAgent);
 
-router.get("/history", authMiddleware, agentController.getProfileWithHistory);
+router.get("/history/:userId", authMiddleware, agentController.getProfileWithHistory);
 
 module.exports = router;

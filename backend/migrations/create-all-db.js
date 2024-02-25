@@ -35,15 +35,12 @@ const createTables = async () => {
 
   const userSelectionsTable = `
     CREATE TABLE IF NOT EXISTS user_selections (
-      pk INT NOT NULL AUTO_INCREMENT,
-      id VARCHAR(255) NOT NULL,
+      id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
       agent_id VARCHAR(255) NOT NULL,
       game_start_time DATETIME,
       CONSTRAINT FK_user FOREIGN KEY (user_id) REFERENCES users (id),
-      CONSTRAINT FK_agent FOREIGN KEY (agent_id) REFERENCES agents (id),
-      PRIMARY KEY(pk),
-      UNIQUE(id)
+      CONSTRAINT FK_agent FOREIGN KEY (agent_id) REFERENCES agents (id)
     )
   `;
 
