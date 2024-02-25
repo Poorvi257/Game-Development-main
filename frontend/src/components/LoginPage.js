@@ -73,7 +73,12 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log('Login Success:', data);
-      navigate("/home"); // Adjust the navigation path as needed
+
+      // Store the bearer token in local storage
+      localStorage.setItem('token', data.token); // Assuming the token is returned in data.token
+
+      // Navigate to the home page
+      navigate("/home", { state: { token: data.token } }); // Pass the token in state (optional, depending on use case)
     } catch (error) {
       console.error('Login Error:', error);
     }
@@ -96,11 +101,17 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log('Registration Success:', data);
-      navigate("/home"); // Adjust the navigation path as needed
+
+      // Store the bearer token in local storage
+      localStorage.setItem('token', data.token); // Assuming the token is returned in data.token
+
+      // Navigate to the home page
+      navigate("/home", { state: { token: data.token } }); // Pass the token in state (optional, depending on use case)
     } catch (error) {
       console.error('Registration Error:', error);
     }
   };
+
 
   return (
     <Box
