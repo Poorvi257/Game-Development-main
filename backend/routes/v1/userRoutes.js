@@ -15,7 +15,7 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 
 // User profile route, with authentication middleware
-router.get("/profile", authMiddleware, authController.getProfile);
+router.get("/history", authMiddleware, authController.getProfileWithHistory);
 
 // Exporting the router
 module.exports = router;
