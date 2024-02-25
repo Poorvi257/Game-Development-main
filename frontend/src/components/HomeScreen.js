@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useData } from '../DataContext';
 import { jwtDecode } from 'jwt-decode';
 import { getProfileHistory } from '../services/Home';
 
 const HomeScreen = () => {
-    const { allAgents, fetchAgentsData } = useData();
-
+    
     const [history, setHistory] = useState([]);
     const [isHistoryAvailable, setFlag] = useState(false)
-
-    useEffect(() => {
-        fetchAgentsData();
-    }, []);
 
     const getHistory = async () => {
         const token = localStorage.getItem('token');

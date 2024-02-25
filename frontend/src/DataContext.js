@@ -1,29 +1,29 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { fetchAgentsAndRoles } from './services/SelectionScreen';
 
-// Create Context
 const DataContext = createContext();
 
-// Custom hook for consuming context
 export const useData = () => useContext(DataContext);
 
-// Provider Component
 export const DataProvider = ({ children }) => {
-  const [allAgents, setAgents] = useState([]); // For storing agents data
-  const [lockedAgent, setLockedAgent] = useState(null); // For storing the selected (locked) agent
+  const [allAgents, setAgents] = useState([]);
+  const [lockedAgent, setLockedAgent] = useState(null);
 
-  // Function to fetch agents data (optional, can be done in components)
-  const fetchAgentsData = async () => {
-    try {
-      const result = await fetchAgentsAndRoles();
-      setAgents(result);
-    } catch (error) {
-      console.error('Failed to fetch agents:', error);
-    }
-  };
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        const result = await fetchAgentsAndRoles();
+        setAgents(result);
+      } catch (error) {
+        console.error('Failed to fetch agents:', error);
+      }
+    };
+
+    initializeData();
+  }, []);
 
   return (
-    <DataContext.Provider value={{ allAgents, setAgents, lockedAgent, setLockedAgent, fetchAgentsData }}>
+    <DataContext.Provider value={{ allAgents, setAgents, lockedAgent, setLockedAgent }}>
       {children}
     </DataContext.Provider>
   );
