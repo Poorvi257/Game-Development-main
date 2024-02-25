@@ -3,41 +3,31 @@ import { Button, Card, CardContent, Grid, Typography, Chip, IconButton } from '@
 import ClearIcon from '@mui/icons-material/Clear';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil'; // No longer need useRecoilValue since we're fetching data
-import { selectedAgentAtom } from '../recoil/Homescreen_recoil';
-import { fetchAgentsAndRoles } from '../services/SelectionScreen';
+import { useRecoilState, useRecoilValue } from 'recoil'; // No longer need useRecoilValue since we're fetching data
+import { selectedAgentAtom, valorantDataState } from '../recoil/Homescreen_recoil';
 import { jwtDecode } from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
+import AgentCard from './AgentCard';
 
 function SelectionScreen() {
   const [selectedRole, setSelectedRole] = useState('');
-  const [allAgents, setAllAgents] = useState([]); // State to hold the original list of agents
-  const [filteredAgents, setFilteredAgents] = useState([]); // State for agents filtered by role
+  const [filteredAgents, setFilteredAgents] = useState([]); // Local state for filtered agents
+  const allAgents = useRecoilValue(valorantDataState);
   const [roles, setRoles] = useState([]);
   const [lockedAgent, setLockedAgent] = useRecoilState(selectedAgentAtom);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  async function fetchAgents ()  {
-    const data = await fetchAgentsAndRoles();
-
-    setAllAgents(data); 
-    setFilteredAgents(data); 
-
-    const uniqueRoles = [...new Set(data.map(agent => agent.role_name))];
-    setRoles(uniqueRoles);
-  }
-  
   useEffect(() => {
-    fetchAgents();
-  }, []);
-
+    const uniqueRoles = [...new Set(allAgents.map(agent => agent.role_name))];
+    setRoles(uniqueRoles);
+  }, [])
 
   useEffect(() => {
     if (selectedRole) {
       setFilteredAgents(allAgents.filter(agent => agent.role_name === selectedRole));
     } else {
       setFilteredAgents(allAgents);
-    }
+    }  
   }, [selectedRole, allAgents]); 
 
   const handleRoleSelect = (role) => {
@@ -86,14 +76,7 @@ function SelectionScreen() {
           <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
             <Card variant="outlined" style={{ opacity: 1 }}> {/* Assuming all agents are playable for simplicity */}
               <CardContent>
-                <Typography variant="h5">{agent.displayName}</Typography>
-                <Typography color="textSecondary">{agent.role_name}</Typography>
-                <Button
-                  startIcon={<LockIcon />}
-                  onClick={() => lockInAgent(agent)}
-                >
-                  Lock In
-                </Button>
+              <AgentCard agent={agent} onSelect={()=>lockInAgent(agent)}/>
               </CardContent>
             </Card>
           </Grid>
