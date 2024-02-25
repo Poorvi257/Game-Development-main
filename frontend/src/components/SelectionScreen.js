@@ -80,7 +80,7 @@ function SelectionScreen() {
 
       const res = await insertLockedAgent(userId, selectedAgent.id, token);
       if (res) {
-        navigate('/game-started');
+        navigate('/game-started', { state: { selectedAgent } });
       } else {
         alert("Error locking in agent!");
       }
