@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Grid, Typography, Chip, IconButton, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
 import AgentCard from './AgentCard';
@@ -17,6 +17,11 @@ function SelectionScreen() {
   const [roles, setRoles] = useState([]);
   const [selectedAgentId, setSelectedAgentId] = useState(null);
 
+  const location = useLocation()
+  const passedHistory = location.state?.history || [];
+  const [agentHistory, setAgentHistory] = useState(passedHistory);
+
+  
   useEffect(() => {
     const uniqueRoles = [...new Set(allAgents?.map(agent => agent.role_name))];
     setRoles(uniqueRoles);
@@ -36,7 +41,7 @@ function SelectionScreen() {
       setFilteredAgents(allAgents);
     }  
   }, [selectedRole, allAgents]); 
-  
+
   const handleAgentSelect = (agent) => {
     setSelectedAgentId(prevSelectedId => prevSelectedId === agent.id ? null : agent.id);
   };
