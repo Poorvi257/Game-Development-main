@@ -5,6 +5,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil'; // No longer need useRecoilValue since we're fetching data
 import { selectedAgentAtom } from '../recoil/Homescreen_recoil';
+import { fetchAgentsAndRoles } from '../services/SelectionScreen';
+import { jwtDecode } from 'jwt-decode';
+import { insertLockedAgent } from '../services/GameStartedScreen';
 
 function SelectionScreen() {
   const [selectedRole, setSelectedRole] = useState('');
@@ -14,43 +17,49 @@ function SelectionScreen() {
   const [lockedAgent, setLockedAgent] = useRecoilState(selectedAgentAtom);
   const navigate = useNavigate();
 
-  // Fetch agents and their roles on mount
-  useEffect(() => {
-    const fetchAgentsAndRoles = async () => {
-      const response = await fetch('http://localhost:8000/api/v1/agents/');
-      const data = await response.json();
-      setAllAgents(data); // Store the original list of agents
-      setFilteredAgents(data); // Initially, no filter is applied so this is the full list
-      // Extract and set unique roles from fetched data
-      const uniqueRoles = [...new Set(data.map(agent => agent.role_name))];
-      setRoles(uniqueRoles);
-    };
+  async function fetchAgents ()  {
+    const data = await fetchAgentsAndRoles();
 
-    fetchAgentsAndRoles();
+    setAllAgents(data); 
+    setFilteredAgents(data); 
+
+    const uniqueRoles = [...new Set(data.map(agent => agent.role_name))];
+    setRoles(uniqueRoles);
+  }
+  
+  useEffect(() => {
+    fetchAgents();
   }, []);
 
-  // Effect to filter agents based on selected role
+
   useEffect(() => {
     if (selectedRole) {
-      // Apply filter to allAgents to get the filtered list
       setFilteredAgents(allAgents.filter(agent => agent.role_name === selectedRole));
     } else {
-      // If no role is selected, show all agents
       setFilteredAgents(allAgents);
     }
-  }, [selectedRole, allAgents]); // Depend on allAgents and selectedRole
+  }, [selectedRole, allAgents]); 
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
   };
 
   const clearFilters = () => {
-    setSelectedRole(''); // Reset selected role to clear filters
+    setSelectedRole(''); 
+  };
+
+  const sendLockAgent = async () => {
+    const token = localStorage.getItem('token');
+
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.id;
+    await insertLockedAgent(userId, lockedAgent.id, token)
   };
 
   const lockInAgent = (agent) => {
     setLockedAgent(agent);
-    navigate('/game-started', { state: { agent } });
+    sendLockAgent()
+    navigate('/game-started');
   };
 
   return (

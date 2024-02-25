@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { valorantDataState } from '../recoil/Homescreen_recoil'; // Assuming you have this atom
+import { fetchAgentsAndRoles } from '../services/SelectionScreen';
 
 const HomeScreen = () => {
     const [history, setHistory] = useState([]);
     const [data, setData] = useRecoilState(valorantDataState);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await fetch('https://valorant-api.com/v1/agents');
-            const jsonData = await result.json();
-            setData(jsonData.data);
-        };
+    const fetchData = async () => {
+        const result = await fetchAgentsAndRoles();
+        setData(result);
+    };
 
+    useEffect(() => {
         fetchData();
     }, [setData]);
 

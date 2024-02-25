@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import { login, signUp } from '../services/LoginPage';
 
 const CustomButton = styled(Button)({
   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -57,59 +58,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
 
   const handleLoginClick = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to login');
-
-      const data = await response.json();
-      console.log('Login Success:', data);
-
-      // Store the bearer token in local storage
-      localStorage.setItem('token', data.token); // Assuming the token is returned in data.token
-
-      // Navigate to the home page
-      navigate("/home", { state: { token: data.token } }); // Pass the token in state (optional, depending on use case)
-    } catch (error) {
-      console.error('Login Error:', error);
-    }
+    let res = await login(username, password)
+    if(res) navigate("/home");
   };
 
   const handleSignUpClick = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to register');
-
-      const data = await response.json();
-      console.log('Registration Success:', data);
-
-      // Store the bearer token in local storage
-      localStorage.setItem('token', data.token); // Assuming the token is returned in data.token
-
-      // Navigate to the home page
-      navigate("/home", { state: { token: data.token } }); // Pass the token in state (optional, depending on use case)
-    } catch (error) {
-      console.error('Registration Error:', error);
-    }
+    let res = await signUp(username, password)
+    if(res) navigate("/home")
   };
 
 
