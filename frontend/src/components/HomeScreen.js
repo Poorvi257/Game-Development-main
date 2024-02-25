@@ -30,8 +30,13 @@ const HomeScreen = () => {
         const fetchHistory = async () => {
             try {
                 const res = await getHistory();
-                if (!res) setFlag(true)
+                if (!res){
+                    setFlag(true)
+                }
+                else{
+                    setFlag(false)
                 setHistory(res || []);
+                }
             } catch (error) {
                 console.error("Error fetching history:", error);
             }
