@@ -1,22 +1,15 @@
 import { Button, Typography } from '@mui/material';
 import React from 'react';
-import LockIcon from '@mui/icons-material/Lock';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; 
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
-function AgentCard({ agent, onSelect }) {
+function AgentCard({ agent, selected, onSelect }) {
   return (
-    <div>
-    {/* style={{ background: 'linear-gradient(to right, #66a8ffff, #3b37a7ff, #261e4fff, #101042ff)'}}> */}
+    <div style={{ cursor: 'pointer', border: selected ? '2px solid green' : 'none' }} onClick={onSelect}>
       <img src={agent.image_url} alt={agent.displayName} style={{ width: '70%', height: 'auto' }} />
       <Typography variant="h5">{agent.displayName}</Typography>
       <Typography color="textSecondary">{agent.role_name}</Typography>
-      <Button
-        startIcon={<LockIcon />}
-        onClick={onSelect}
-        variant="contained"
-        color="primary"
-      >
-        Lock In
-      </Button>
+      {selected ? <CheckCircleOutlineIcon color="success" /> : <RadioButtonUncheckedIcon />}
     </div>
   );
 }

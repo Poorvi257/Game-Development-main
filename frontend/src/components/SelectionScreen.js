@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Grid, Typography, Chip, IconButton } from '@mui/material';
+import { Card, CardContent, Grid, Typography, Chip, IconButton, Button } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -14,9 +15,10 @@ function SelectionScreen() {
   const [filteredAgents, setFilteredAgents] = useState(allAgents)
   const [selectedRole, setSelectedRole] = useState('');
   const [roles, setRoles] = useState([]);
+  const [selectedAgentId, setSelectedAgentId] = useState(null);
 
   useEffect(() => {
-    const uniqueRoles = [...new Set(allAgents.map(agent => agent.role_name))];
+    const uniqueRoles = [...new Set(allAgents?.map(agent => agent.role_name))];
     setRoles(uniqueRoles);
   }, [allAgents])
   
@@ -34,13 +36,26 @@ function SelectionScreen() {
       setFilteredAgents(allAgents);
     }  
   }, [selectedRole, allAgents]); 
-
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
+  
+  const handleAgentSelect = (agent) => {
+    setSelectedAgentId(prevSelectedId => prevSelectedId === agent.id ? null : agent.id);
   };
 
-  const clearFilters = () => {
-    setSelectedRole(''); 
+  const lockInSelectedAgent = async () => {
+    const selectedAgent = allAgents.find(agent => agent.id === selectedAgentId);
+    setLockedAgent(selectedAgent); 
+
+    try {
+      // Now pass the selectedAgent directly to sendLockAgent
+      const res = await sendLockAgent(selectedAgent);
+      if (res) {
+        navigate('/game-started');
+      } else {
+        alert("Error locking in agent!");
+      }
+    } catch (error) {
+      console.error('Error locking in agent:', error);
+    }
   };
 
   const sendLockAgent = async (agent) => {
@@ -61,23 +76,6 @@ function SelectionScreen() {
       return null; 
     }
   };
-  
-  const lockInAgent = async (agent) => {
-    setLockedAgent(agent); 
-  
-    try {
-      const res = await sendLockAgent(agent); 
-      if (res) {
-        navigate('/game-started');
-      }
-      else{
-        alert("Error locking in agent!")
-      }
-    } catch (error) {
-      console.error('Error locking in agent:', error);
-      
-    }
-  };
 
   return (
     <div style={{ padding: '20px' }}>
@@ -90,25 +88,39 @@ function SelectionScreen() {
             <Chip
               key={role}
               label={role}
-              onClick={() => handleRoleSelect(role)}
+              onClick={() => setSelectedRole(role)}
               color={selectedRole === role ? 'primary' : 'default'}
               style={{ marginRight: '10px' }}
             />
           ))}
-          <IconButton onClick={clearFilters}>
+          <IconButton onClick={() => setSelectedRole('')}>
             <ClearIcon />
           </IconButton>
         </Grid>
-        {filteredAgents.map(agent => (
+        {filteredAgents?.map((agent, key) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
-            <Card variant="outlined" style={{ opacity: 1 }}>
+            <Card variant="outlined">
               <CardContent>
-              <AgentCard agent={agent} onSelect={()=>lockInAgent(agent)}/>
+              <AgentCard
+                  agent={agent}
+                  onSelect={() => handleAgentSelect(agent)}
+                  selected={selectedAgentId === agent.id}
+                />
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<LockIcon />}
+        disabled={!selectedAgentId}
+        onClick={lockInSelectedAgent}
+        style={{ position: 'fixed', bottom: 20, right: 20 }}
+      >
+        Lock In
+      </Button>
     </div>
   );
 }
