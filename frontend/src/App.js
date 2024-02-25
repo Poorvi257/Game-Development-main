@@ -11,8 +11,8 @@ function App() {
     <RecoilRoot>
       <Router>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<HomeScreen />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/home" element={<HomeScreen />} />
           <Route path="/selection-screen" element={<SelectionScreen />} />
           <Route path="/game-started" element={<GameStartedScreen />} />
         </Routes>
