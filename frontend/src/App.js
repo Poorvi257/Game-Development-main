@@ -1,14 +1,14 @@
 import React from 'react';
-import { RecoilRoot } from 'recoil';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from "./components/HomeScreen";
 import SelectionScreen from "./components/SelectionScreen";
 import GameStartedScreen from "./components/GameStartedScreen";
 import LoginPage from './components/LoginPage';
+import { DataProvider } from './DataContext';
 
 function App() {
   return (
-    <RecoilRoot>
+    <DataProvider>
       <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -17,7 +17,7 @@ function App() {
           <Route path="/game-started" element={<GameStartedScreen />} />
         </Routes>
       </Router>
-    </RecoilRoot>
+    </DataProvider>
   );
 }
 

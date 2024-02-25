@@ -15,14 +15,14 @@ const agentController = {
         try {
             const { userId, agentId } = req.body; 
             const gameStartTime = new Date();
-            const id = "23hjhgi202"
+            const id = "1h177121"
             const insertQuery = `
                 INSERT INTO user_selections (id, user_id, agent_id, game_start_time) VALUES (?, ?, ?, ?);
             `;
 
             await pool.query(insertQuery, [id, userId, agentId, gameStartTime]);
 
-            res.status(201).send({ message: "Agent locked successfully" });
+            res.status(200).send({ message: "Agent locked successfully" });
         } catch (error) {
             console.error("Lock Agent Error:", error);
             res.status(500).send({ message: "Internal Server Error" });

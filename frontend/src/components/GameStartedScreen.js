@@ -1,10 +1,9 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
-import { selectedAgentAtom } from '../recoil/Homescreen_recoil';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../DataContext';
 
 const GameStartedScreen = () => {
-  const lockedAgent = useRecoilValue(selectedAgentAtom);
+  const { lockedAgent } = useData();
   let navigate = useNavigate();
 
   const handleReturnHome = () => {

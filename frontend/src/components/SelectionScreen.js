@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, CardContent, Grid, Typography, Chip, IconButton } from '@mui/material';
+import { Card, CardContent, Grid, Typography, Chip, IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil'; // No longer need useRecoilValue since we're fetching data
-import { selectedAgentAtom, valorantDataState } from '../recoil/Homescreen_recoil';
 import { jwtDecode } from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
 import AgentCard from './AgentCard';
+import { useData } from '../DataContext';
 
 function SelectionScreen() {
-  const [selectedRole, setSelectedRole] = useState('');
-  const [filteredAgents, setFilteredAgents] = useState([]); // Local state for filtered agents
-  const allAgents = useRecoilValue(valorantDataState);
-  const [roles, setRoles] = useState([]);
-  const [lockedAgent, setLockedAgent] = useRecoilState(selectedAgentAtom);
   const navigate = useNavigate()
+
+  const { allAgents, lockedAgent, setLockedAgent } = useData();
+  const [filteredAgents, setFilteredAgents] = useState(allAgents)
+  const [selectedRole, setSelectedRole] = useState('');
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const uniqueRoles = [...new Set(allAgents.map(agent => agent.role_name))];
@@ -39,17 +37,39 @@ function SelectionScreen() {
   };
 
   const sendLockAgent = async () => {
-    const token = localStorage.getItem('token');
-
-    const decodedToken = jwtDecode(token);
-    const userId = decodedToken.id;
-    await insertLockedAgent(userId, lockedAgent.id, token)
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token not found');
+  
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      if (!userId) throw new Error('User ID not found in token');
+  
+      if (!lockedAgent?.id) throw new Error('Locked agent ID is missing');
+  
+      const res = await insertLockedAgent(userId, lockedAgent.id, token);
+      return res; 
+    } catch (error) {
+      console.error('Error in sendLockAgent:', error);
+      return null; 
+    }
   };
-
-  const lockInAgent = (agent) => {
-    setLockedAgent(agent);
-    sendLockAgent()
-    navigate('/game-started');
+  
+  const lockInAgent = async (agent) => {
+    setLockedAgent(agent); 
+  
+    try {
+      const res = await sendLockAgent(); 
+      if (res) {
+        navigate('/game-started');
+      }
+      else{
+        alert("Error locking in agent!")
+      }
+    } catch (error) {
+      console.error('Error locking in agent:', error);
+      
+    }
   };
 
   return (
@@ -74,7 +94,7 @@ function SelectionScreen() {
         </Grid>
         {filteredAgents.map(agent => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
-            <Card variant="outlined" style={{ opacity: 1 }}> {/* Assuming all agents are playable for simplicity */}
+            <Card variant="outlined" style={{ opacity: 1 }}>
               <CardContent>
               <AgentCard agent={agent} onSelect={()=>lockInAgent(agent)}/>
               </CardContent>

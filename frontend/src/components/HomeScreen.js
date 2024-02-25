@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { valorantDataState } from '../recoil/Homescreen_recoil'; // Assuming you have this atom
-import { fetchAgentsAndRoles } from '../services/SelectionScreen';
+import { useData } from '../DataContext';
 
 const HomeScreen = () => {
-    const [history, setHistory] = useState([]);
-    const [data, setData] = useRecoilState(valorantDataState);
-
-    const fetchData = async () => {
-        const result = await fetchAgentsAndRoles();
-        setData(result);
-    };
+    const { allAgents, fetchAgentsData } = useData();
 
     useEffect(() => {
-        fetchData();
-    }, [setData]);
-
+        fetchAgentsData();
+    }, []);
 
     return (
         <div>
@@ -33,7 +24,7 @@ const HomeScreen = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.slice(0,10).map((item, index) => (
+                    {allAgents.slice(0,10).map((item, index) => (
                         <tr key={index}>
                             <td>{item.displayName}</td>
                             <td>{new Date().toLocaleString()}</td>
