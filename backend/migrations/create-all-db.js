@@ -1,33 +1,18 @@
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 const axios = require('axios');
+const pool = require('../config/database');
 
 // Create the database if it doesn't exist
 const createDatabase = async () => {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-  });
-
-  await connection.query(
+  await pool.query(
     `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`
   );
-
   console.log("Database created successfully");
-
-  connection.end();
 };
 
 // Create the tables if they don't exist
 const createTables = async () => {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
-
   const agentsTable = `
     CREATE TABLE IF NOT EXISTS agents (
       id VARCHAR(255) PRIMARY KEY,
@@ -62,22 +47,14 @@ const createTables = async () => {
     )
   `;
 
-  await connection.query(agentsTable);
-  await connection.query(usersTable);
-  await connection.query(userSelectionsTable);
+  await pool.query(agentsTable);
+  await pool.query(usersTable);
+  await pool.query(userSelectionsTable);
 
   console.log("Tables created successfully");
-
-  connection.end();
 };
 
 const insertAgents = async () => {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
   const agentsData = await axios.get("https://valorant-api.com/v1/agents");
   const json = await agentsData.data;
 
@@ -110,7 +87,7 @@ const insertAgents = async () => {
 
       let abilities = agent.abilities.map(ability => ability.displayIcon).join(", ")
 
-      await connection.query(insertQuery, [
+      await pool.query(insertQuery, [
         agent.uuid,
         agent.displayName,
         agent.role?.displayName,
@@ -123,7 +100,6 @@ const insertAgents = async () => {
       console.error(`Error inserting agent: ${agent.displayName}`, error);
     }
   }
-  connection.end()
 };
 
 // Run the migrations
