@@ -1,32 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, CardContent, Grid, Typography, Chip, Avatar, IconButton } from '@mui/material';
+import { Button, Card, CardContent, Grid, Typography, Chip, IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil'; // Changed from useRecoilState to useRecoilValue
-import { selectedAgentAtom, valorantDataState } from '../recoil/Homescreen_recoil';
-
-// Assuming valorantDataState is an atom representing the original list of agents
-const roles = ['Duelist', 'Initiator', 'Controller', 'Sentinel'];
+import { useRecoilState } from 'recoil'; // No longer need useRecoilValue since we're fetching data
+import { selectedAgentAtom } from '../recoil/Homescreen_recoil';
 
 function SelectionScreen() {
   const [selectedRole, setSelectedRole] = useState('');
-  const [filteredAgents, setFilteredAgents] = useState([]); // Local state for filtered agents
-  const agents = useRecoilValue(valorantDataState); // Only read from Recoil, no need to set
-  const [lockedAgent, setLockedAgent] = useRecoilState(selectedAgentAtom)
+  const [allAgents, setAllAgents] = useState([]); // State to hold the original list of agents
+  const [filteredAgents, setFilteredAgents] = useState([]); // State for agents filtered by role
+  const [roles, setRoles] = useState([]);
+  const [lockedAgent, setLockedAgent] = useRecoilState(selectedAgentAtom);
   const navigate = useNavigate();
+
+  // Fetch agents and their roles on mount
+  useEffect(() => {
+    const fetchAgentsAndRoles = async () => {
+      const response = await fetch('http://localhost:8000/api/v1/agents/');
+      const data = await response.json();
+      setAllAgents(data); // Store the original list of agents
+      setFilteredAgents(data); // Initially, no filter is applied so this is the full list
+      // Extract and set unique roles from fetched data
+      const uniqueRoles = [...new Set(data.map(agent => agent.role_name))];
+      setRoles(uniqueRoles);
+    };
+
+    fetchAgentsAndRoles();
+  }, []);
 
   // Effect to filter agents based on selected role
   useEffect(() => {
-    const filterAgents = () => {
-      if (selectedRole) {
-        return agents.filter(agent => agent?.role?.displayName === selectedRole);
-      }
-      return agents; // Return all agents if no role is selected
-    };
-
-    setFilteredAgents(filterAgents()); // Update filtered agents based on selected role
-  }, [selectedRole, agents]); // Depend on agents to update filteredAgents when the original list changes
+    if (selectedRole) {
+      // Apply filter to allAgents to get the filtered list
+      setFilteredAgents(allAgents.filter(agent => agent.role_name === selectedRole));
+    } else {
+      // If no role is selected, show all agents
+      setFilteredAgents(allAgents);
+    }
+  }, [selectedRole, allAgents]); // Depend on allAgents and selectedRole
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
@@ -37,7 +49,7 @@ function SelectionScreen() {
   };
 
   const lockInAgent = (agent) => {
-    setLockedAgent(agent)
+    setLockedAgent(agent);
     navigate('/game-started', { state: { agent } });
   };
 
@@ -62,14 +74,13 @@ function SelectionScreen() {
           </IconButton>
         </Grid>
         {filteredAgents.map(agent => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={agent.uuid}>
-            <Card variant="outlined" style={{ opacity: agent.isPlayableCharacter ? 1 : 0.5 }}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
+            <Card variant="outlined" style={{ opacity: 1 }}> {/* Assuming all agents are playable for simplicity */}
               <CardContent>
                 <Typography variant="h5">{agent.displayName}</Typography>
-                <Typography color="textSecondary">{agent.role?.displayName}</Typography>
+                <Typography color="textSecondary">{agent.role_name}</Typography>
                 <Button
                   startIcon={<LockIcon />}
-                  disabled={!agent.isPlayableCharacter}
                   onClick={() => lockInAgent(agent)}
                 >
                   Lock In
