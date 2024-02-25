@@ -128,37 +128,6 @@ const insertAgents = async () => {
   connection.end()
 };
 
-// Insert the initial data into the users table
-const insertUsers = async () => {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
-
-  const usersData = [
-    {
-      username: "admin",
-      password: "password",
-      games_played: 0,
-    },
-  ];
-
-  const insertQuery = `INSERT INTO users (username, password, games_played) VALUES (?, ?, ?)`;
-
-  // Correct approach for individual insertion
-  for (const user of usersData) {
-    await connection.query(insertQuery, [
-      user.username,
-      user.password,
-      user.games_played,
-    ]);
-  }
-
-  connection.end();
-};
-
 // Run the migrations
 const main = async () => {
   await createDatabase();

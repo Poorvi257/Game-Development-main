@@ -18,7 +18,7 @@ const authController = {
             if (existingUsers.length > 0) {
                 return res.status(400).send({ message: "User already exists" });
             }
-
+            
             const hashedPassword = await bcrypt.hash(password, 10);
             let games_played = 0;
             await pool.query('INSERT INTO users (username, password, games_played) VALUES (?, ?, ?)', [username, hashedPassword, games_played]);
@@ -52,21 +52,6 @@ const authController = {
             res.status(200).send({ user, token });
         } catch (error) {
             console.error("Login Error:", error);
-            res.status(500).send({ message: "Internal Server Error" });
-        }
-    },
-
-    async getProfileWithHistory(req, res) {
-        try {
-            const [users] = await pool.query('SELECT * FROM user_selections WHERE id = ?', [req.user.id]);
-            if (users.length === 0) {
-                return res.status(404).send({ message: "You have no history, start playing!" });
-            }
-
-            const user = users[0];
-            res.status(200).json(user);
-        } catch (error) {
-            console.error("Get Profile Error:", error);
             res.status(500).send({ message: "Internal Server Error" });
         }
     },
