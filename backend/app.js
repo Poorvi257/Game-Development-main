@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use('/api/v1', require('./routes/v1/userRoutes'));
+app.use('/api/v1/agents', require('./routes/v1/agentRoutes'));
 
 const PORT = 8000;
 app.listen(PORT, () => {
