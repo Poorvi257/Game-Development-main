@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getProfileHistory } from '../services/Home';
-import { Button } from '@mui/material';
+import { Button, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, Container } from '@mui/material';
 import { useData } from '../DataContext';
 
 const HomeScreen = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { allAgents } = useData();
     const [history, setHistory] = useState([]);
-    const [isHistoryAvailable, setFlag] = useState(false)
+    const [isHistoryAvailable, setFlag] = useState(false);
 
     const getHistory = async () => {
         const token = localStorage.getItem('token');
@@ -61,40 +61,40 @@ const HomeScreen = () => {
         navigate('/selection-screen', { state: { history: enrichedHistory } });
     };
 
-
     return (
-        <div>
-            <h1>Welcome to the Game</h1>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={startGame}>
+        <Container>
+            <Typography variant="h3" gutterBottom>Welcome to the Game</Typography>
+            <Button variant="contained" color="primary" onClick={startGame}>
                 Start Game
             </Button>
-            <h2>History of Selected Agents</h2>
-            {isHistoryAvailable ?
-                <h4>There is no History, start Playing!</h4>
-                :
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Agent Name</th>
-                            <th>Agent Icon</th>
-                            <th>Selection Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {enrichedHistory?.slice(0, 10).map((item, index) => (
-                            <tr key={index}>
-                                <td><img src={item.imageUrl} height={90} width={90} /></td>
-                                <td>{item?.displayName}</td>
-                                <td>{item.game_start_time.toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            }
-        </div>
+            <Typography variant="h4" gutterBottom>History of Selected Agents</Typography>
+            {isHistoryAvailable ? (
+                <Typography variant="subtitle1">There is no History, start Playing!</Typography>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table aria-label="agent history">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Agent Icon</TableCell>
+                                <TableCell>Agent Name</TableCell>
+                                <TableCell>Selection Time</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {enrichedHistory?.slice(0, 10).map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <Avatar alt={item.displayName} src={item.imageUrl} />
+                                    </TableCell>
+                                    <TableCell>{item.displayName}</TableCell>
+                                    <TableCell>{item.game_start_time.toLocaleString()}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
+        </Container>
     );
 };
 
