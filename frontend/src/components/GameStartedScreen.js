@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { selectedAgentAtom } from '../recoil/Homescreen_recoil';
 import { useNavigate } from 'react-router-dom';
+// import jwtDecode to decode the token
+import jwtDecode from 'jwt-decode';
 
 const GameStartedScreen = () => {
   const lockedAgent = useRecoilValue(selectedAgentAtom);
@@ -10,7 +12,10 @@ const GameStartedScreen = () => {
   // Function to lock the agent by sending data to the backend
   const lockAgent = async () => {
     const token = localStorage.getItem('token'); // Example of retrieving the token
-    const userId = localStorage.getItem('userId'); // Example, adjust based on your auth strategy
+
+    // Get the userID from the jwt bearer token using jwt-decode
+    const decodedToken = jwtDecode(token);
+    const userId = decodedToken.id;
 
     try {
       const response = await fetch('http://localhost:8000/api/v1/agents/lock', {
