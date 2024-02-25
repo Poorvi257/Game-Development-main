@@ -9,7 +9,7 @@ const GameStartedScreen = () => {
   let navigate = useNavigate();
 
   const handleReturnHome = () => {
-   navigate('/'); // Adjust according to your routing setup
+   navigate('/home'); // Adjust according to your routing setup
   };
 
   return (
