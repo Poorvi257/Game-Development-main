@@ -2,8 +2,6 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
 const axios = require('axios');
 
-console.log(process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME)
-
 // Create the database if it doesn't exist
 const createDatabase = async () => {
   const connection = await mysql.createConnection({

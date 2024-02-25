@@ -35,7 +35,6 @@ const authController = {
 
     async login(req, res) {
         try {
-            console.log(req.body);
             const { username, password } = req.body;
             const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
             if (users.length === 0) {
