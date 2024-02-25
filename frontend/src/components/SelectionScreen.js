@@ -3,7 +3,7 @@ import { Card, CardContent, Grid, Typography, Chip, IconButton, Button } from '@
 import LockIcon from '@mui/icons-material/Lock';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useLocation, useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode }   from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
 import AgentCard from './AgentCard';
 import { useData } from '../DataContext';
