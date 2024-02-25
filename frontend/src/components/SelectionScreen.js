@@ -36,10 +36,40 @@ function SelectionScreen() {
 
   const lockInSelectedAgent = async () => {
     const selectedAgent = allAgents.find(agent => agent.id === selectedAgentId);
-    setLockedAgent(selectedAgent);
-    // Proceed with the existing lockInAgent logic
-    // This assumes that the existing lockInAgent and sendLockAgent functions can handle locking in the selected agent correctly.
+    setLockedAgent(selectedAgent); // This line sets the selected agent in the global state/context
+
+    try {
+      // Now pass the selectedAgent directly to sendLockAgent
+      const res = await sendLockAgent(selectedAgent);
+      if (res) {
+        navigate('/game-started');
+      } else {
+        alert("Error locking in agent!");
+      }
+    } catch (error) {
+      console.error('Error locking in agent:', error);
+    }
   };
+
+  const sendLockAgent = async (agent) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token not found');
+
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      if (!userId) throw new Error('User ID not found in token');
+
+      if (!agent?.id) throw new Error('Locked agent ID is missing');
+
+      const res = await insertLockedAgent(userId, agent.id, token);
+      return res;
+    } catch (error) {
+      console.error('Error in sendLockAgent:', error);
+      return null;
+    }
+  };
+
 
   return (
     <div style={{ padding: '20px' }}>
