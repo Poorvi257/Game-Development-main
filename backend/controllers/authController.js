@@ -56,11 +56,11 @@ const authController = {
         }
     },
 
-    async getProfile(req, res) {
+    async getProfileWithHistory(req, res) {
         try {
-            const [users] = await pool.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+            const [users] = await pool.query('SELECT * FROM user_selections WHERE id = ?', [req.user.id]);
             if (users.length === 0) {
-                return res.status(404).send({ message: "User not found" });
+                return res.status(404).send({ message: "You have no history, start playing!" });
             }
 
             const user = users[0];
