@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, CardContent, Grid, Typography, Chip, IconButton, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { jwtDecode }   from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
 import AgentCard from './AgentCard';
 import { useData } from '../DataContext';
@@ -11,29 +11,18 @@ import { useData } from '../DataContext';
 function SelectionScreen() {
   const navigate = useNavigate();
   const { allAgents } = useData();
-  const [filteredAgents, setFilteredAgents] = useState(allAgents);
   const [selectedRole, setSelectedRole] = useState('');
-  const [roles, setRoles] = useState([]);
   const [selectedAgentId, setSelectedAgentId] = useState(null);
   const location = useLocation();
   const passedHistory = location.state?.history || [];
   const [agentHistory, setAgentHistory] = useState(passedHistory);
 
-  useEffect(() => {
-    const uniqueRoles = [...new Set(allAgents?.map(agent => agent.role_name))];
-    setRoles(uniqueRoles);
-  }, [allAgents]);
+  const roles = useMemo(() => [...new Set(allAgents?.map(agent => agent.role_name))], [allAgents]);
 
-  useEffect(() => {
-    if (selectedRole) {
-      setFilteredAgents(allAgents.filter(agent => agent.role_name === selectedRole));
-    } else {
-      setFilteredAgents(allAgents);
-    }
-  }, [selectedRole, allAgents]);
+  const filteredAgents = useMemo(() => selectedRole ? allAgents.filter(agent => agent.role_name === selectedRole) : allAgents, [selectedRole, allAgents]);
 
   // Agent selection constraints
-  const isAgentSelectable = (agentId) => {
+  const isAgentSelectable = useCallback((agentId) => {
     if (agentHistory.length >= 10) return false; // Maximum of 10 games per user
 
     const selectionCounts = agentHistory.reduce((acc, curr) => {
@@ -55,15 +44,15 @@ function SelectionScreen() {
     }
 
     return true;
-  };
+  }, [agentHistory]);
 
-  const handleAgentSelect = (agent) => {
+  const handleAgentSelect = useCallback((agent) => {
     if (isAgentSelectable(agent.id)) {
       setSelectedAgentId(prevSelectedId => prevSelectedId === agent.id ? null : agent.id);
     }
-  };
+  }, [isAgentSelectable]);
 
-  const lockInSelectedAgent = async () => {
+  const lockInSelectedAgent = useCallback(async () => {
     if (!isAgentSelectable(selectedAgentId)) {
       alert("This agent cannot be locked in due to selection constraints.");
       return;
@@ -87,7 +76,7 @@ function SelectionScreen() {
     } catch (error) {
       console.error('Error locking in agent:', error);
     }
-  };
+  }, [selectedAgentId, isAgentSelectable, allAgents, navigate]);
 
   return (
     <div style={{ padding: '20px' }}>
