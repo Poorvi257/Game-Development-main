@@ -10,6 +10,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); 
 
+  const agent1 = 'https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/fullportrait.png'
+  const agent2 = 'https://media.valorant-api.com/agents/1e58de9c-4950-5125-93e9-a0aee9f98746/fullportrait.png'
+
   const handleActionClick = async (action) => {
     try {
       const res = await action(username, password);
@@ -33,9 +36,9 @@ export default function LoginPage() {
         position: 'relative',
       }}
     >
-      <AgentImage src={`https://media.valorant-api.com/agents/320b2a48-4d9b-a075-30f1-1f93a9b638fa/fullportrait.png`} alt="Sova" />
-      <AgentImage src={`https://media.valorant-api.com/agents/1e58de9c-4950-5125-93e9-a0aee9f98746/fullportrait.png`} alt="Other Agent" />
-      {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error messages */}
+      <AgentImage src={agent1} alt="Sova" />
+      <AgentImage src={agent2} alt="Other Agent" />
+      {error && <div style={{ color: 'red' }}>{error}</div>}
       <CustomTextField
         label="Username"
         variant="outlined"

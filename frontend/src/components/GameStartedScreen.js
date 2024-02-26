@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../DataContext';
 import { Typography, Button, Avatar } from '@mui/material';
-import '../styles/GameStartedScreen.css'; // Make sure this path is correct
+import '../styles/GameStartedScreen.css';
 
 const GameStartedScreen = () => {
   const { setLockedAgent } = useData();
