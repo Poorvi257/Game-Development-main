@@ -112,7 +112,6 @@ function SelectionScreen() {
               onClick={() => setSelectedRole("")}
             >
               <div><ClearIcon /></div>
-              <span className="filterText">Clear</span>
             </button>
           </li>
         </ul>
