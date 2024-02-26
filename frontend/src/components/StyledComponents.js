@@ -1,5 +1,5 @@
 // StyledComponents.js
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, TableCell } from '@mui/material';
 import { styled } from '@mui/system';
 
 export const CustomButton = styled(Button)({
@@ -48,4 +48,18 @@ export const AgentImage = styled('img')({
     right: 0,
     bottom: "20vh",
   },
+});
+
+export const StyledTableCells = styled(TableCell)({
+  backgroundColor: '#e6e0d5',
+  color: "black",
+  borderBottom: '2px solid #d4d1cc',
+  fontFamily: "monospace"
+});
+
+export const StyledButton = styled(Button)({
+  background: 'linear-gradient(135deg, rgb(255, 51, 66) 0%, rgb(255, 48, 64) 0.01%, rgb(255, 125, 102) 100%)',
+  color: 'black',
+  fontFamily: "Arial,sans-serif",
+  fontWeight: 600
 });

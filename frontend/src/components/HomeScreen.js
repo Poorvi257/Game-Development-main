@@ -17,21 +17,7 @@ import {
     Box,
   } from '@mui/material';
   import { useData } from '../DataContext';
-  import { styled } from '@mui/system';
-  
-  const StyledTableCells = styled(TableCell)(({ theme }) => ({
-    backgroundColor: '#e6e0d5', // Adjust the color based on your theme
-    color: "black",
-    borderBottom: '2px solid #d4d1cc',
-    fontFamily: "monospace"
-  }));
-
-  const StyledButton = styled(Button)({
-    background: 'linear-gradient(135deg, rgb(255, 51, 66) 0%, rgb(255, 48, 64) 0.01%, rgb(255, 125, 102) 100%)',
-    color: 'black',
-    fontFamily: "Arial,sans-serif",
-    fontWeight: 600
-  });
+import { StyledButton, StyledTableCells } from './StyledComponents';
 
   const HomeScreen = () => {
     const navigate = useNavigate();
@@ -50,7 +36,7 @@ import {
                     return;
                 }
 
-                const decodedToken = jwtDecode(token); // Assuming jwtDecode is correctly imported
+                const decodedToken = jwtDecode(token);
                 const userId = decodedToken.id;
                 if (!userId) {
                     setError('User ID not found in token');
