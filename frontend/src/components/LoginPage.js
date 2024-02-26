@@ -1,24 +1,23 @@
-// LoginPage.js
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { login, signUp } from '../services/LoginPage';
-import { CustomButton, CustomTextField, AgentImage } from './StyledComponents'; // Import styled components from a separate file
+import { CustomButton, CustomTextField, AgentImage } from './StyledComponents';
 
 export default function LoginPage() {
   let navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // For displaying error messages
+  const [error, setError] = useState(''); 
 
   const handleActionClick = async (action) => {
     try {
       const res = await action(username, password);
       if (res) navigate("/home");
-      else throw new Error('Action failed'); // Assuming the action functions return a truthy value on success
+      else throw new Error('Action failed'); 
     } catch (error) {
       console.error(error);
-      setError('Failed to perform action. Please try again.'); // Display a meaningful error message
+      setError('Failed to perform action. Please try again.'); 
     }
   };
 
