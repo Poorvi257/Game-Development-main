@@ -1,0 +1,73 @@
+.agentCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 1vw;
+  background-size:cover ;
+  background-position: center;
+  border-radius: 8px;
+  transition: border 0.3s, transform 0.3s;
+}
+.agentName {
+  position: relative; 
+  z-index: 2;
+  transition: font-size 0.3s;
+  padding: 0.5em; 
+  margin-bottom: 1em;  
+}
+.agentCard.selected {
+  border: 3px solid #fc3d46; 
+  outline: 3px solid #fc3d46;
+  outline-offset: -9px;
+  transform: scale(1.05); 
+  z-index: 2; 
+}
+
+.agentName {
+  font-size: 1.5em; 
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  padding: 0.5em;
+  background: rgba(0, 0, 0, 0.7); 
+  text-align: center;
+  margin-bottom: 5vh; 
+}
+
+.agentAbilities {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 10px;
+  position: absolute;
+  bottom: 0; 
+  left: 0;
+  right: 0;
+  z-index: 3;
+}
+
+.agentCard.selected .agentAbilities {
+  padding-top: 1em; 
+}
+
+.abilityIcon {
+  width: 24px; 
+  height: 24px;
+  margin: 0 5px; 
+  transition: opacity 0.3s; 
+}
+
+.agentOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3); 
+  z-index: 1; 
+}

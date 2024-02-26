@@ -1,43 +1,36 @@
-import { Button, Typography } from '@mui/material';
 import React from 'react';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import "../styles/AgentCard.css"
 
 function AgentCard({ agent, selected, onSelect, isEnabled = true }) {
-  // Styling for the card when it's disabled
-  const disabledStyle = {
-    opacity: 0.5,
-    backgroundColor: '#f0f0f0', // Gray out the background
-    pointerEvents: 'none', // Disable pointer events
+
+  const handleClick = () => {
+    if (isEnabled && onSelect) {
+      onSelect(agent);
+    }
   };
 
-  // Merge styles based on the enabled/disabled state
-  const cardStyle = {
-    cursor: 'pointer',
-    border: selected ? '2px solid green' : 'none',
-    ...(isEnabled ? {} : disabledStyle), // Apply disabled style if not enabled
-  };
-
-  // Adjusting image opacity based on the enabled/disabled state
-  const imageStyle = {
-    width: '70%',
-    height: 'auto',
-    opacity: isEnabled ? 1 : 0.5, // Reduce opacity if disabled
-  };
+  const abilityIcons = agent.abilities_icons.split(", ").map((iconUrl, index) => (
+    <img key={index} src={iconUrl} alt={`Ability ${index + 1}`} className="abilityIcon" />
+  ));
 
   return (
     <div
-      style={cardStyle}
-      onClick={() => {
-        if (isEnabled) {
-          onSelect();
-        }
+      className={`agentCard ${selected ? 'selected' : ''}`}
+      style={{
+        backgroundImage: `url(${agent.image_url})`,
+        opacity: isEnabled ? 1 : 0.5,
+        cursor: isEnabled ? 'pointer' : 'default',
       }}
+      onClick={handleClick}
     >
-      <img src={agent.image_url} alt={agent.displayName} style={imageStyle} />
-      <Typography variant="h5">{agent.displayName}</Typography>
-      <Typography color="textSecondary">{agent.role_name}</Typography>
-      {selected ? <CheckCircleOutlineIcon color="success" /> : <RadioButtonUncheckedIcon />}
+      <div className="agentName" style={{ fontSize: selected ? '1.75em' : '1.5em' }}>
+        {agent.displayName}
+      </div>
+      {selected && (
+        <div className="agentAbilities">
+          {abilityIcons}
+        </div>
+      )}
     </div>
   );
 }
