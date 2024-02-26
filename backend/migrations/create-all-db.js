@@ -20,6 +20,7 @@ const createTables = async () => {
       role_name VARCHAR(255) NOT NULL,
       role_icon TEXT,
       image_url VARCHAR(255),
+      full_image VARCHAR(255),
       abilities_icons TEXT
     )
   `;
@@ -78,7 +79,7 @@ const insertAgents = async () => {
     }
     
     const insertQuery = `
-        INSERT INTO agents (id, displayName, role_name, role_icon, image_url, abilities_icons) VALUES (?, ?, ?, ?, ?, ?);
+        INSERT INTO agents (id, displayName, role_name, role_icon, image_url, full_image, abilities_icons) VALUES (?, ?, ?, ?, ?, ?, ?);
       `;
     try {
 
@@ -90,6 +91,7 @@ const insertAgents = async () => {
         agent.role?.displayName,
         agent.role?.displayIcon,
         agent.displayIcon,
+        agent.fullPortrait,
         abilities,
       ]);
 
