@@ -95,7 +95,7 @@ import {
     if (error) return <Typography>{error}</Typography>;
 
     return (
-    <Container>
+    <Container style={{paddingBottom: "3vh"}}>
       <Box style={{backgroundColor: '#0f1923', padding: '15px', marginBottom: '15px',  marginTop: '2vh' }}>
         <Typography gutterBottom style={{ color: 'white', fontSize: "2.5rem", }}>
           Welcome to the Game
