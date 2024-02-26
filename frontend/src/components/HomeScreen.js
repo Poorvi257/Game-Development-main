@@ -2,10 +2,38 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getProfileHistory } from '../services/Home';
-import { Button, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, Container } from '@mui/material';
-import { useData } from '../DataContext';
+import {
+    Button,
+    TableCell,
+    Typography,
+    Table,
+    TableBody,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Avatar,
+    Container,
+    Box,
+  } from '@mui/material';
+  import { useData } from '../DataContext';
+  import { styled } from '@mui/system';
+  
+  const StyledTableCells = styled(TableCell)(({ theme }) => ({
+    backgroundColor: '#e6e0d5', // Adjust the color based on your theme
+    color: "black",
+    borderBottom: '2px solid #d4d1cc',
+    fontFamily: "monospace"
+  }));
 
-const HomeScreen = () => {
+  const StyledButton = styled(Button)({
+    background: 'linear-gradient(135deg, rgb(255, 51, 66) 0%, rgb(255, 48, 64) 0.01%, rgb(255, 125, 102) 100%)',
+    color: 'black',
+    fontFamily: "Arial,sans-serif",
+    fontWeight: 600
+  });
+
+  const HomeScreen = () => {
     const navigate = useNavigate();
     const { allAgents } = useData();
     const [history, setHistory] = useState([]);
@@ -31,11 +59,7 @@ const HomeScreen = () => {
                 }
 
                 const res = await getProfileHistory(userId, token);
-                if (res && res.length > 0) {
-                    setHistory(res);
-                } else {
-                    setError('No history available');
-                }
+                setHistory(res);
             } catch (error) {
                 console.error("Error fetching history:", error);
                 setError('Error fetching history');
@@ -47,15 +71,21 @@ const HomeScreen = () => {
         fetchHistory();
     }, []);
 
-    const enrichedHistory = useMemo(() => history.map(historyEntry => {
-        const agentDetails = allAgents.find(agent => agent.id === historyEntry.agent_id);
-        return {
-            ...historyEntry,
-            displayName: agentDetails?.displayName,
-            imageUrl: agentDetails?.image_url,
-            isEnabled: true
-        };
-    }), [history, allAgents]);
+    const enrichedHistory = useMemo(() => {
+        if (history.length > 0) {
+          return history.map(historyEntry => {
+            const agentDetails = allAgents.find(agent => agent.id === historyEntry.agent_id);
+            return {
+              ...historyEntry,
+              displayName: agentDetails?.displayName,
+              imageUrl: agentDetails?.image_url,
+              isEnabled: true
+            };
+          });
+        }
+        return [];
+      }, [history, allAgents]); 
+    
 
     const startGame = () => {
         navigate('/selection-screen', { state: { history: enrichedHistory } });
@@ -65,37 +95,47 @@ const HomeScreen = () => {
     if (error) return <Typography>{error}</Typography>;
 
     return (
-        <Container>
-            <Typography variant="h3" gutterBottom>Welcome to the Game</Typography>
-            <Button variant="contained" color="primary" onClick={startGame}>
-                Start Game
-            </Button>
-            <Typography variant="h4" gutterBottom>History of Selected Agents</Typography>
-            {enrichedHistory.length > 0 ? (
+    <Container>
+      <Box style={{backgroundColor: '#0f1923', padding: '15px', marginBottom: '15px',  marginTop: '2vh' }}>
+        <Typography gutterBottom style={{ color: 'white', fontSize: "2.5rem", }}>
+          Welcome to the Game
+        </Typography>
+        <StyledButton variant="contained" onClick={startGame}>
+          Start Game
+        </StyledButton>
+      </Box>
+      <Typography gutterBottom style={{ fontSize: "1.6rem", color: 'black', fontFamily: "monospace", marginBottom: "2vh" }}>
+        History of Selected Agents
+      </Typography>
+            {history.length > 0 ? (
                 <TableContainer component={Paper}>
-                    <Table aria-label="agent history">
+                    <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Agent Icon</TableCell>
-                                <TableCell>Agent Name</TableCell>
-                                <TableCell>Selection Time</TableCell>
+                                <StyledTableCells>Sequence</StyledTableCells>
+                                <StyledTableCells>Agent</StyledTableCells>
+                                <StyledTableCells>Agent Name</StyledTableCells>
+                                <StyledTableCells>Selection Time</StyledTableCells>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {enrichedHistory.slice(0, 10).map((item, index) => (
+                            {enrichedHistory?.slice(0, 10).map((item, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>
+                                    <StyledTableCells>{index+1}</StyledTableCells>
+                                    <StyledTableCells>
                                         <Avatar alt={item.displayName} src={item.imageUrl} />
-                                    </TableCell>
-                                    <TableCell>{item.displayName}</TableCell>
-                                    <TableCell>{new Date(item.game_start_time).toLocaleString()}</TableCell>
+                                    </StyledTableCells>
+                                    <StyledTableCells>{item.displayName}</StyledTableCells>
+                                    <StyledTableCells>{new Date(item.game_start_time).toLocaleString()}</StyledTableCells>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
             ) : (
-                <Typography variant="subtitle1">There is no history, start playing!</Typography>
+                <Typography gutterBottom style={{ fontSize: "1.6rem", color: 'black', fontFamily: "monospace", marginBottom: "2vh" }}>
+                    There is no history, start playing!
+                </Typography>
             )}
         </Container>
     );
