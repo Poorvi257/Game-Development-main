@@ -24,7 +24,7 @@
   
   .returnHomeButton {
     bottom: 20px;
-    right: 15px;
+    right: 0;
     color: black;
     font-family: "monospace";
     font-weight: 600;
