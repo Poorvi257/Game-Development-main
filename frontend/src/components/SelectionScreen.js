@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Card, CardContent, Grid, Typography, Chip, IconButton, Button } from '@mui/material';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Grid, Button } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { insertLockedAgent } from '../services/GameStartedScreen';
 import AgentCard from './AgentCard';
 import { useData } from '../DataContext';
+import "../styles/SelectionScreen.css"
 
 function SelectionScreen() {
   const navigate = useNavigate();
@@ -17,7 +18,18 @@ function SelectionScreen() {
   const passedHistory = location.state?.history || [];
   const [agentHistory, setAgentHistory] = useState(passedHistory);
 
-  const roles = useMemo(() => [...new Set(allAgents?.map(agent => agent.role_name))], [allAgents]);
+  const roles = useMemo(() => {
+    const rolesDict = {};
+
+    for (let agent of allAgents) {
+      const roleName = agent.role_name;
+      if (!(roleName in rolesDict)) {
+        rolesDict[roleName] = agent.role_icon;
+      }
+    }
+
+    return Object.entries(rolesDict).map(([name, displayIcon]) => ({ name, displayIcon }));
+  }, [allAgents]);
 
   const filteredAgents = useMemo(() => selectedRole ? allAgents.filter(agent => agent.role_name === selectedRole) : allAgents, [selectedRole, allAgents]);
 
@@ -79,50 +91,57 @@ function SelectionScreen() {
   }, [selectedAgentId, isAgentSelectable, allAgents, navigate]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h4" gutterBottom>
-        Select an Agent
-      </Typography>
-      <Grid container spacing={2} alignItems="center">
-        {roles.map(role => (
-          <Chip
-            key={role}
-            label={role}
-            onClick={() => setSelectedRole(role)}
-            color={selectedRole === role ? 'primary' : 'default'}
-            style={{ marginRight: '10px' }}
-          />
-        ))}
-        <IconButton onClick={() => setSelectedRole('')}>
-          <ClearIcon />
-        </IconButton>
-        {filteredAgents.map((agent, key) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
-            <Card variant="outlined">
-              <CardContent>
-                <AgentCard
-                  agent={agent}
+    <Grid container className="container">
+      <Grid item xs={2} className="leftColumn">
+        <ul className="filterList" style={{ paddingLeft: "1.2vw", marginTop: "4vh" }}>
+          {roles.map((role, index) => (
+            <li key={index} className="filterItem">
+              <button
+                onClick={() => setSelectedRole(role.name)}
+                className={`filterButton ${selectedRole === role.name ? 'selected' : ''}`}
+              >
+                <div>
+                  <div className="filterIcon"><img src={role.displayIcon} width={46} height={46} /></div>
+                </div>
+                <div className="filterText">{role.name}</div>
+              </button>
+            </li>
+          ))}
+          <li>
+            <button
+              onClick={() => setSelectedRole("")}
+            >
+              <div><ClearIcon /></div>
+              <span className="filterText">Clear</span>
+            </button>
+          </li>
+        </ul>
+      </Grid>
+      <Grid item xs={10} className="rightColumn" style={{ height: '100vh' }}>
+        <div className="agentCardContainer">
+          <Grid container>
+            {filteredAgents.map((agent, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4} lg={2.4} style={{ padding: 0 }}>
+                <AgentCard agent={agent}
                   onSelect={() => handleAgentSelect(agent)}
                   selected={selectedAgentId === agent.id}
                   isEnabled={isAgentSelectable(agent.id)}
+                  className="agentCard"
                 />
-              </CardContent>
-            </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </div>
+        <button size='large'
+          className='lockInButton'
+          disabled={!selectedAgentId || !isAgentSelectable(selectedAgentId)}
+          onClick={lockInSelectedAgent}>
+          Lock In
+        </button>
       </Grid>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<LockIcon />}
-        disabled={!selectedAgentId || !isAgentSelectable(selectedAgentId)}
-        onClick={lockInSelectedAgent}
-        style={{ position: 'fixed', bottom: 20, right: 20 }}
-      >
-        Lock In
-      </Button>
-    </div>
+
+    </Grid>
   );
-}
+};
 
 export default SelectionScreen;
