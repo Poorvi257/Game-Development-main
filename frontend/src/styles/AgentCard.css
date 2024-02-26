@@ -13,13 +13,7 @@
   border-radius: 8px;
   transition: border 0.3s, transform 0.3s;
 }
-.agentName {
-  position: relative; 
-  z-index: 2;
-  transition: font-size 0.3s;
-  padding: 0.5em; 
-  margin-bottom: 1em;  
-}
+
 .agentCard.selected {
   border: 3px solid #fc3d46; 
   outline: 3px solid #fc3d46;

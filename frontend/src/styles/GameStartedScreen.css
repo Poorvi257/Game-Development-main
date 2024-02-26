@@ -16,12 +16,6 @@
     margin-bottom: 0.5rem;
   }
   
-  .agentName {
-    font-size: 2rem;
-    color: #ddd;
-    margin-bottom: 1rem; 
-  }
-  
   .agentImage {
     max-width: 90%; 
     max-height: 65vh; 
@@ -29,9 +23,8 @@
   }
   
   .returnHomeButton {
-    position: absolute;
     bottom: 20px;
-    right: 20px;
+    right: 15px;
     color: black;
     font-family: "monospace";
     font-weight: 600;
