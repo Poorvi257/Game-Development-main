@@ -79,7 +79,7 @@ import { StyledButton, StyledTableCells } from './StyledComponents';
     if (error) return <Typography>{error}</Typography>;
 
     return (
-    <Container style={{paddingBottom: "3vh"}}>
+    <Container style={{paddingBottom: "10vh", height: "100vh", overflowY: "auto"}}>
       <Box style={{backgroundColor: '#0f1923', padding: '15px', marginBottom: '15px',  marginTop: '2vh' }}>
         <Typography gutterBottom style={{ color: 'white', fontSize: "2.5rem", }}>
           Welcome to the Game
