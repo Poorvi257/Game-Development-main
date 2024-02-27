@@ -6,6 +6,7 @@ import GameStartedScreen from "./components/GameStartedScreen";
 import LoginPage from './components/LoginPage';
 import Header from './components/Header';
 import { DataProvider } from './DataContext';
+import { AuthProvider } from './AuthContext';
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -27,7 +28,9 @@ function App() {
   return (
     <DataProvider>
       <Router>
-        <AppWrapper />
+        <AuthProvider>
+          <AppWrapper />
+        </AuthProvider>
       </Router>
     </DataProvider>
   );

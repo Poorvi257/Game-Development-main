@@ -1,4 +1,4 @@
-const pool = require('../config/database'); // Assuming db.js is in the root folder
+const pool = require('../config/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
