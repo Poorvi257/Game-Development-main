@@ -106,7 +106,6 @@ const main = async () => {
   await createDatabase();
   await createTables();
   await insertAgents();
-  // await insertUsers();
 
   console.log("Database migrations completed successfully.");
 };
