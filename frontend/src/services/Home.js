@@ -3,15 +3,13 @@ export async function getProfileHistory(
     token
 ) {
     if (!token) throw new Error("Missing Token");
-    // if (!process.env.BASE_API_URL)
-    //     throw new Error(
-    //         "Missing Environment Configuration: BASE_API_URL"
-    //     );
-
-    try {
+    if (!process.env.REACT_APP_API_BASE_URL)
+        throw new Error(
+            "Missing Environment Configuration: REACT_APP_API_BASE_URL"
+        );
+        try {
         const res = await fetch(
-            // `${process.env.BASE_API_URL}
-            `http://localhost:8000/api/v1/agents/history/${userId}`,
+            `${process.env.REACT_APP_API_BASE_URL}agents/history/${userId}`,
             {
                 headers: {
                     'Content-Type': 'application/json',

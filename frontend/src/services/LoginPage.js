@@ -5,14 +5,13 @@ export async function login (
     if(!username || !password){
         throw new Error("Authentication details missing.")
     }
-    // if (!process.env.BASE_API_URL)
-    //     throw new Error(
-    //         "Missing Environment Configuration: BASE_API_URL"
-    //     );
+    if (!process.env.REACT_APP_API_BASE_URL)
+        throw new Error(
+            "Missing Environment Configuration: REACT_APP_API_BASE_URL"
+        );
     try {
         let response = await fetch(
-            // `${process.env.BASE_API_URL}login`,
-            "http://localhost:8000/api/v1/login",
+            `${process.env.REACT_APP_API_BASE_URL}login`,
             {
                 method: "POST",
                 headers: {
@@ -24,7 +23,7 @@ export async function login (
                 })
             }
         )
-        
+
         if (!response.ok) throw new Error('Failed to login');
         const data = await response.json();
         localStorage.setItem('token', data.token);
@@ -42,14 +41,13 @@ export async function signUp (
     if(!username || !password){
         throw new Error("Authentication details missing.")
     }
-    // if (!process.env.BASE_API_URL)
-    //     throw new Error(
-    //         "Missing Environment Configuration: BASE_API_URL"
-    //     );
+    if (!process.env.REACT_APP_API_BASE_URL)
+        throw new Error(
+            "Missing Environment Configuration: REACT_APP_API_BASE_URL"
+        );
     try {
         let response = await fetch(
-            // `${process.env.BASE_API_URL}register`,
-            'http://localhost:8000/api/v1/register',
+            `${process.env.REACT_APP_API_BASE_URL}register`,
             {
                 method: 'POST',
                 headers: {

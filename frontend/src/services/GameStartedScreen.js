@@ -4,15 +4,13 @@ export async function insertLockedAgent(
     token
 ) {
     if (!token) throw new Error("Missing Token");
-    // if (!process.env.BASE_API_URL)
-    //     throw new Error(
-    //         "Missing Environment Configuration: BASE_API_URL"
-    //     );
-
+    if (!process.env.REACT_APP_API_BASE_URL)
+        throw new Error(
+            "Missing Environment Configuration: REACT_APP_API_BASE_URL"
+        );
     try {
         const res = await fetch(
-            // `${process.env.BASE_API_URL}
-            `http://localhost:8000/api/v1/agents/lock`,
+            `${process.env.REACT_APP_API_BASE_URL}agents/lock`,
             {
                 headers: {
                     'Content-Type': 'application/json',
