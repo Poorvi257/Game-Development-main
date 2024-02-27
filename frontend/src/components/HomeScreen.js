@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { getProfileHistory } from '../services/Home';
 import {
-    Button,
-    TableCell,
     Typography,
     Table,
     TableBody,
@@ -57,7 +55,7 @@ import { StyledButton, StyledTableCells } from './StyledComponents';
         fetchHistory();
     }, []);
 
-    const enrichedHistory = useMemo(() => {
+    const detailedHistory = useMemo(() => {
         if (history.length > 0) {
           return history.map(historyEntry => {
             const agentDetails = allAgents.find(agent => agent.id === historyEntry.agent_id);
@@ -74,7 +72,7 @@ import { StyledButton, StyledTableCells } from './StyledComponents';
     
 
     const startGame = () => {
-        navigate('/selection-screen', { state: { history: enrichedHistory } });
+        navigate('/selection-screen', { state: { history: detailedHistory } });
     };
 
     if (loading) return <Typography>Loading...</Typography>;
@@ -105,7 +103,7 @@ import { StyledButton, StyledTableCells } from './StyledComponents';
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {enrichedHistory?.slice(0, 10).map((item, index) => (
+                            {detailedHistory?.slice(0, 10).map((item, index) => (
                                 <TableRow key={index}>
                                     <StyledTableCells>{index+1}</StyledTableCells>
                                     <StyledTableCells>

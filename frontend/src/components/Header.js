@@ -12,7 +12,7 @@ const Header = () => {
   };
 
   return (
-    <header style={{ background: "transparent", display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+    <header style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
       <Button
        className='button'
        onClick={handleLogout} color="inherit">

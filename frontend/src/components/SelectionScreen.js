@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Grid, Button } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
+import { Grid } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -15,8 +14,7 @@ function SelectionScreen() {
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedAgentId, setSelectedAgentId] = useState(null);
   const location = useLocation();
-  const passedHistory = location.state?.history || [];
-  const [agentHistory, setAgentHistory] = useState(passedHistory);
+  const agentHistory = useMemo(() => location.state?.history || [], [location.state?.history]);
 
   const roles = useMemo(() => {
     const rolesDict = {};
