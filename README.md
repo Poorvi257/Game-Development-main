@@ -34,8 +34,14 @@ JWT_SECRET=your_jwt_secret
 
 #### Database Setup
 - **Local Setup**: Ensure your database (e.g., MySQL) is installed and running. Create a database and update the `.env` file with your database connection details.
+- **Create Database**: Run this script to create database on your local
+```bash
+brew services start mysql
+mysql -u user -p
+```
+
 - **Initialize Database**: 
-Run any database migration or seed scripts you have to set up your database schema and initial data.
+Run the database migration scripts you have to set up your database schema and initial data.
 ```bash
 npm run migrate
 ```
