@@ -10,9 +10,12 @@ export const CustomButton = styled(Button)({
   height: 48,
   padding: '0 30px',
   margin: '10px',
+  transition: 'transform 0.2s ease-in-out, background 0.3s ease-in-out',
   '&:hover': {
     background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
+    transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
     boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    transform: 'scale(1.05)',
   },
 });
 
@@ -38,6 +41,7 @@ export const CustomTextField = styled(TextField)({
 export const AgentImage = styled('img')({
   position: 'absolute',
   height: '70%',
+  transition: 'transform 0.3s ease-in-out',
   '&:first-of-type': {
     transform: 'rotate(-5deg)',
     left: 0,

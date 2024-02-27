@@ -11,7 +11,7 @@ function AgentCard({ agent, selected, onSelect, isEnabled = true }) {
 
   const abilityIcons = agent.abilities_icons.split(", ").map((iconUrl, index) => (
     <img key={index} src={iconUrl} alt={`Ability ${index + 1}`} className="abilityIcon" />
-  ));
+  )); 
 
   return (
     <div

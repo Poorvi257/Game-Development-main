@@ -17,7 +17,7 @@ const agentController = {
             if (!userId || !agentId) {
                 return res.status(400).send({ error: "Missing userId or agentId in request." });
             }
-            
+
             const gameStartTime = new Date();
             const insertQuery = `
                 INSERT INTO user_selections (user_id, agent_id, game_start_time) VALUES (?, ?, ?);
@@ -37,7 +37,7 @@ const agentController = {
             if (!userId) {
                 return res.status(400).send({ error: "Missing userId in request." });
             }
-            
+
             const [users] = await pool.query('SELECT * FROM user_selections WHERE user_id = ?', [userId]);
             if (users.length === 0) {
                 return res.status(404).send({ message: "You have no history, start playing!" });

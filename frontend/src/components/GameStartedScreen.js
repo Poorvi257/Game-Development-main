@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useData } from '../DataContext';
-import { Typography, Button, Avatar } from '@mui/material';
+import { Typography, Button } from '@mui/material';
 import '../styles/GameStartedScreen.css';
 
 const GameStartedScreen = () => {
@@ -25,7 +25,7 @@ const GameStartedScreen = () => {
       <Typography variant="h4" className="gameStartedTitle" gutterBottom>
         Game Started
       </Typography>
-      <Typography variant="h4" className="agentName">
+      <Typography variant="h4" className="agentName" gutterBottom>
         {selectedAgent?.displayName}
       </Typography>
       <img
